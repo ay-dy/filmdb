@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <title>Home</title>
 </head>
-<body onload="jsonFilmTable('films-table')">
+<body onload="xmlFilmTable('films-table')">
+	<form onsubmit="jsonSearch('search-string', 'films-table')" style="margin: 1rem 1rem 3rem 1rem;">
+		<input type="text" id="search-string">
+		<input type="submit" value="Search">
+	</form>
 	<div id="films-table"></div>
 	<script type="text/javascript" src="./scripts/script.js"></script>
 </body>

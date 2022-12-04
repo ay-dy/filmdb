@@ -8,6 +8,24 @@ function jsonFilmTable(resultRegion) {
 	});
 }
 
+function jsonSearch(searchString, resultRegion) {
+	let address = "filmapi";
+	const data = "?format=json&q=" + getValue(searchString);
+	address += data;
+	ajaxGet(address, resultRegion, function(request) {
+		displayJsonFilmTable(request, resultRegion);
+	});
+}
+
+function xmlFilmTable(resultRegion) {
+	let address = "filmapi";
+	const data = "?format=xml";
+	address += data;
+	ajaxGet(address, resultRegion, function(request) {
+		displayXmlFilmTable(request, resultRegion);
+	});
+}
+
 // Request functions
 function ajaxGet(address, resultRegion, responseHandler) {
 	const request = new XMLHttpRequest();
@@ -22,16 +40,17 @@ function displayJsonFilmTable(request, resultRegion) {
 	if (request.readyState == 4 && request.status == 200) {
 		const films = JSON.parse(request.responseText);
 
-		const headings = [];
+		const preparedHeadings = [];
 		const preparedFilms = [];
 
-		// Loop through the first film object and populate the "headings" array with its keys.
+		// Loop through the first film object and populate the "preparedHeadings" array with its keys.
 		for (let key in films[0]) {
 			if (key != "id") {
 				// Capitalise the first character and concatenate it to the remaining ones.
-				headings.push(key.charAt(0).toUpperCase() + key.slice(1));
+				preparedHeadings.push(key.charAt(0).toUpperCase() + key.slice(1));
 			}
 		}
+		console.log(preparedHeadings)
 
 		// Loop through all film objects and populate the "preparedFilms" array with its non-id versions.
 		films.forEach(film => {
@@ -40,8 +59,44 @@ function displayJsonFilmTable(request, resultRegion) {
 			noIdFilm.shift();
 			preparedFilms.push(noIdFilm);
 		});
+		console.log(preparedFilms);
 
-		htmlInsert(resultRegion, generateTable(headings, preparedFilms));
+		htmlInsert(resultRegion, generateTable(preparedHeadings, preparedFilms));
+	}
+}
+
+function displayXmlFilmTable(request, resultRegion) {
+	if (request.readyState == 4 && request.status == 200) {
+
+		const films = request.responseXML.getElementsByTagName("film");
+		const headings = films[0].children;
+
+		let preparedHeadings = [];
+		let preparedFilms = [];
+
+		// Loop through the first film object and populate the "preparedHeadings" array with its children's nodeNames.
+		for (let i = 0; i < headings.length; i++) {
+			let heading = headings[i].nodeName;
+			if (heading != "id") {
+				// Capitalise the first character and concatenate it to the remaining ones.
+				preparedHeadings.push(heading.charAt(0).toUpperCase() + heading.slice(1));
+			}
+		}
+		console.log(preparedHeadings);
+
+		for (let i = 0; i < films.length; i++) {
+			let filmElement = films[i].children;
+			let filmData = [];
+			for (let j = 0; j < filmElement.length; j++) {
+				if (filmElement[j].nodeName != "id") {
+					filmData.push(filmElement[j].innerHTML);
+				}
+			}
+			preparedFilms.push(filmData);
+		}
+		console.log(preparedFilms);
+
+		htmlInsert(resultRegion, generateTable(preparedHeadings, preparedFilms));
 	}
 }
 
@@ -80,4 +135,8 @@ function getSuitableHandler(format) {
 
 function htmlInsert(resultRegion, html) {
 	document.getElementById(resultRegion).innerHTML = html;
+}
+
+function getValue(inputField) {
+	return encodeURIComponent(document.getElementById(inputField).value);
 }

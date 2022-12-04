@@ -1,10 +1,12 @@
 package models;
 
-public class Film {
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 
-	public Film() {
-
-	}
+@XmlType(propOrder = { "id", "title", "year", "director", "stars", "review" })
+public class Film
+{
+	public Film() {}
 
 	public Film(int id, String title, int year, String director, String stars, String review) {
 		super();
@@ -23,6 +25,7 @@ public class Film {
 	String stars;
 	String review;
 
+	@XmlElement
 	public int getId()
 	{
 		return id;
@@ -33,6 +36,7 @@ public class Film {
 		this.id = id;
 	}
 
+	@XmlElement
 	public String getTitle()
 	{
 		return title;
@@ -43,6 +47,7 @@ public class Film {
 		this.title = title;
 	}
 
+	@XmlElement
 	public int getYear()
 	{
 		return year;
@@ -53,6 +58,7 @@ public class Film {
 		this.year = year;
 	}
 
+	@XmlElement
 	public String getDirector()
 	{
 		return director;
@@ -63,6 +69,7 @@ public class Film {
 		this.director = director;
 	}
 
+	@XmlElement
 	public String getStars()
 	{
 		return stars;
@@ -73,6 +80,7 @@ public class Film {
 		this.stars = stars;
 	}
 
+	@XmlElement
 	public String getReview()
 	{
 		return review;
@@ -83,11 +91,11 @@ public class Film {
 		this.review = review;
 	}
 
-	/*
-	 * @Override public String toString() { return "Film [id=" + id + ", title=" +
-	 * title + ", year=" + year + ", director=" + director + ", stars=" + stars +
-	 * ", review=" + review + "]"; }
-	 * 
-	 */
+	@Override
+	public String toString()
+	{
+		return "Film [id=" + id + ", title=" + title + ", year=" + year + ", director=" + director + ", stars=" + stars
+				+ ", review=" + review + "]";
+	}
 
 }
