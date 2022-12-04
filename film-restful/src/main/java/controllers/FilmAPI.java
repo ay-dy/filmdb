@@ -2,8 +2,6 @@ package controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import database.FilmDAO;
-import models.Film;
 
 @WebServlet("/filmapi")
 public class FilmAPI extends HttpServlet
@@ -26,6 +23,7 @@ public class FilmAPI extends HttpServlet
 
 		PrintWriter writer = response.getWriter();
 		String format = request.getParameter("format");
+		String searchString = request.getParameter("q");
 		String output = "";
 
 		switch (format) {
@@ -40,17 +38,12 @@ public class FilmAPI extends HttpServlet
 			break;
 		}
 
-		if (request.getParameter("q") == null) {
-			ArrayList<Film> allFilms = dao.getAllFilms();
-			output = FilmUtils.getFormattedFilms(allFilms, format);
-
+		if (searchString == null) {
+			writer.print(FilmUtils.getFormattedFilms(dao.getAllFilms(), format));
 		} else {
-			String q = request.getParameter("q");
-			ArrayList<Film> foundFilms = dao.searchFilms(q);
-			output = FilmUtils.getFormattedFilms(foundFilms, format);
+			writer.print(FilmUtils.getFormattedFilms(dao.searchFilms(searchString), format));
 		}
 
-		System.out.println(output);
 		writer.print(output);
 		writer.close();
 	}

@@ -1,28 +1,13 @@
 // Request initialisers
-function jsonFilmTable(resultRegion) {
-	let address = "filmapi";
-	const data = "?format=json";
-	address += data
-	ajaxGet(address, resultRegion, function(request) {
-		displayJsonFilmTable(request, resultRegion);
-	});
-}
+function getFilmTable(searchString, formatOption, resultRegion) {
+	searchString = getValue(searchString);
+	formatOption = getValue(formatOption);
 
-function jsonSearch(searchString, resultRegion) {
-	let address = "filmapi";
-	const data = "?format=json&q=" + getValue(searchString);
-	address += data;
-	ajaxGet(address, resultRegion, function(request) {
-		displayJsonFilmTable(request, resultRegion);
-	});
-}
+	const address = "filmapi?format=" + formatOption + "&q=" + searchString;
+	const responseHandler = getSuitableHandler(formatOption);
 
-function xmlFilmTable(resultRegion) {
-	let address = "filmapi";
-	const data = "?format=xml";
-	address += data;
 	ajaxGet(address, resultRegion, function(request) {
-		displayXmlFilmTable(request, resultRegion);
+		responseHandler(request, resultRegion);
 	});
 }
 
@@ -50,16 +35,16 @@ function displayJsonFilmTable(request, resultRegion) {
 				preparedHeadings.push(key.charAt(0).toUpperCase() + key.slice(1));
 			}
 		}
-		console.log(preparedHeadings)
+		console.log("JSON headings: ", preparedHeadings);
 
 		// Loop through all film objects and populate the "preparedFilms" array with its non-id versions.
 		films.forEach(film => {
-			let noIdFilm = Object.values(film);
+			const preparedFilm = Object.values(film);
 			// Remove the first value (id) from the array.
-			noIdFilm.shift();
-			preparedFilms.push(noIdFilm);
+			preparedFilm.shift();
+			preparedFilms.push(preparedFilm);
 		});
-		console.log(preparedFilms);
+		console.log("JSON films: ", preparedFilms);
 
 		htmlInsert(resultRegion, generateTable(preparedHeadings, preparedFilms));
 	}
@@ -67,12 +52,11 @@ function displayJsonFilmTable(request, resultRegion) {
 
 function displayXmlFilmTable(request, resultRegion) {
 	if (request.readyState == 4 && request.status == 200) {
-
 		const films = request.responseXML.getElementsByTagName("film");
 		const headings = films[0].children;
 
-		let preparedHeadings = [];
-		let preparedFilms = [];
+		const preparedHeadings = [];
+		const preparedFilms = [];
 
 		// Loop through the first film object and populate the "preparedHeadings" array with its children's nodeNames.
 		for (let i = 0; i < headings.length; i++) {
@@ -82,19 +66,51 @@ function displayXmlFilmTable(request, resultRegion) {
 				preparedHeadings.push(heading.charAt(0).toUpperCase() + heading.slice(1));
 			}
 		}
-		console.log(preparedHeadings);
+		console.log("XML headings: ", preparedHeadings);
 
+		// Loop through all film objects and populate the "preparedFilms" array with its non-id versions.
 		for (let i = 0; i < films.length; i++) {
-			let filmElement = films[i].children;
-			let filmData = [];
-			for (let j = 0; j < filmElement.length; j++) {
-				if (filmElement[j].nodeName != "id") {
-					filmData.push(filmElement[j].innerHTML);
+			let rawFilmData = films[i].children;
+			let preparedFilmData = [];
+			for (let j = 0; j < rawFilmData.length; j++) {
+				if (rawFilmData[j].nodeName != "id") {
+					preparedFilmData.push(rawFilmData[j].innerHTML);
 				}
 			}
-			preparedFilms.push(filmData);
+			preparedFilms.push(preparedFilmData);
 		}
-		console.log(preparedFilms);
+		console.log("XML films: ", preparedFilms);
+
+		htmlInsert(resultRegion, generateTable(preparedHeadings, preparedFilms));
+	}
+}
+
+function displayStringFilmTable(request, resultRegion) {
+	if (request.readyState == 4 && request.status == 200) {
+		// Split the string with each new line.
+		const films = request.responseText.split(/\n+/);
+		/*
+			Remove the empty value from the end of the array.
+			(It gets there because the last rerord also has a \n which gets split
+			but there is nothing after it.)
+		*/
+		films.splice(-1);
+		console.log("String films (RAW)", films);
+
+		const preparedHeadings = films[0].split("|");
+		// Remove the Id heading as we don't need it.
+		preparedHeadings.shift();
+		// Now that we got the headings in a separate array, we can drop them from the films array'
+		films.shift();
+		console.log("String headings: ", preparedHeadings);
+
+		const preparedFilms = [];
+		for (let i = 0; i < films.length; i++) {
+			let preparedFilmData = films[i].split("|");
+			preparedFilmData.shift();
+			preparedFilms.push(preparedFilmData);
+		}
+		console.log("String films: ", preparedFilms);
 
 		htmlInsert(resultRegion, generateTable(preparedHeadings, preparedFilms));
 	}
@@ -127,9 +143,9 @@ function getSuitableHandler(format) {
 		case "json":
 			return displayJsonFilmTable;
 		case "xml":
-			return "";
+			return displayXmlFilmTable;
 		default:
-			return "";
+			return displayStringFilmTable;
 	}
 }
 

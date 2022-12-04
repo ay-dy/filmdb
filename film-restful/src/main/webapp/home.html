@@ -4,13 +4,16 @@
 <meta charset="UTF-8">
 <title>Home</title>
 </head>
-<body onload="xmlFilmTable('films-table')">
-	<form onsubmit="jsonSearch('search-string', 'films-table')" style="margin: 1rem 1rem 3rem 1rem;">
-		<input type="text" id="search-string">
-		<input type="submit" value="Search">
+<body onload="getFilmTable('search-string', 'format', 'films-table')">
+	<form action="#" style="margin: 1rem 1rem 3rem 1rem;">
+		<input type="text" id="search-string"> <select id="format">
+			<option value="json">JSON</option>
+			<option value="xml">XML</option>
+			<option value="string">String</option>
+		</select> <input type="submit" value="Search"
+			onclick="getFilmTable('search-string', 'format', 'films-table')">
 	</form>
 	<div id="films-table"></div>
 	<script type="text/javascript" src="./scripts/script.js"></script>
 </body>
 </html>
-
