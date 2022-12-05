@@ -25,18 +25,8 @@ public class FilmAPI extends HttpServlet
 		String format = request.getParameter("format");
 		String searchString = request.getParameter("q");
 		String output = "";
-
-		switch (format) {
-		case "json":
-			response.setContentType("application/json");
-			break;
-		case "xml":
-			response.setContentType("text/xml");
-			break;
-		default:
-			response.setContentType("text/plain");
-			break;
-		}
+		
+		response.setContentType(FilmUtils.getContentType(format));
 
 		if (searchString == null) {
 			writer.print(FilmUtils.getFormattedFilms(dao.getAllFilms(), format));
@@ -50,18 +40,34 @@ public class FilmAPI extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-
+		// Insert new film
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-
+		// Update existing film
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Pragma", "no-cache");
+		
+		PrintWriter writer = response.getWriter();
+		//String format = request.getParameter("format");
+		int id = Integer.parseInt(request.getParameter("id"));
+		//response.setContentType(FilmUtils.getContentType(format));
+		
+		boolean deleted = dao.deleteFilm(id);
+		System.out.println(deleted);
+		
+		if (deleted) {
+			writer.print("Film deleted successfully." + "|" + id);
+		} else {
+			writer.print("Failed to delete film. Please try again." + "|" + id);
+		}
+		
+		writer.close();
 	}
-
 }

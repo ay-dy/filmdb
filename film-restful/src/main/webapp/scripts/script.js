@@ -1,17 +1,31 @@
-// Request initialisers
+// ==================== Request initialisers ====================
 function getFilmTable(searchString, formatOption, resultRegion) {
-	searchString = getValue(searchString);
-	formatOption = getValue(formatOption);
+	filmTitle = getEncodedValue(searchString);
+	format = getEncodedValue(formatOption);
 
-	const address = "filmapi?format=" + formatOption + "&q=" + searchString;
-	const responseHandler = getSuitableHandler(formatOption);
+	const address = "filmapi?format=" + format + "&q=" + filmTitle;
+	const responseHandler = getSuitableHandler(format);
 
 	ajaxGet(address, resultRegion, function(request) {
 		responseHandler(request, resultRegion);
 	});
 }
 
-// Request functions
+function deleteFilm(filmId, resultRegion) {
+	console.log("delete button: " + filmId);
+	const address = "filmapi?id=" + filmId;
+
+	ajaxDelete(address, resultRegion, function(request) {
+		displayCrudMessage(request, resultRegion);
+	});
+
+}
+
+function updateFilm(filmId) {
+	console.log("update button: " + filmId);
+}
+
+// ==================== Request functions ====================
 function ajaxGet(address, resultRegion, responseHandler) {
 	const request = new XMLHttpRequest();
 	request.onreadystatechange = function() {
@@ -21,6 +35,16 @@ function ajaxGet(address, resultRegion, responseHandler) {
 	request.send(null);
 }
 
+function ajaxDelete(address, resultRegion, responseHandler) {
+	const request = new XMLHttpRequest();
+	request.onreadystatechange = function() {
+		responseHandler(request, resultRegion)
+	}
+	request.open("DELETE", address, true);
+	request.send(null);
+}
+
+// ==================== Response handlers ====================
 function displayJsonFilmTable(request, resultRegion) {
 	if (request.readyState == 4 && request.status == 200) {
 		const films = JSON.parse(request.responseText);
@@ -35,13 +59,12 @@ function displayJsonFilmTable(request, resultRegion) {
 				preparedHeadings.push(key.charAt(0).toUpperCase() + key.slice(1));
 			}
 		}
+		preparedHeadings.push("Actions");
 		console.log("JSON headings: ", preparedHeadings);
 
 		// Loop through all film objects and populate the "preparedFilms" array with its non-id versions.
 		films.forEach(film => {
 			const preparedFilm = Object.values(film);
-			// Remove the first value (id) from the array.
-			preparedFilm.shift();
 			preparedFilms.push(preparedFilm);
 		});
 		console.log("JSON films: ", preparedFilms);
@@ -66,6 +89,7 @@ function displayXmlFilmTable(request, resultRegion) {
 				preparedHeadings.push(heading.charAt(0).toUpperCase() + heading.slice(1));
 			}
 		}
+		preparedHeadings.push("Actions");
 		console.log("XML headings: ", preparedHeadings);
 
 		// Loop through all film objects and populate the "preparedFilms" array with its non-id versions.
@@ -73,9 +97,7 @@ function displayXmlFilmTable(request, resultRegion) {
 			let rawFilmData = films[i].children;
 			let preparedFilmData = [];
 			for (let j = 0; j < rawFilmData.length; j++) {
-				if (rawFilmData[j].nodeName != "id") {
-					preparedFilmData.push(rawFilmData[j].innerHTML);
-				}
+				preparedFilmData.push(rawFilmData[j].innerHTML);
 			}
 			preparedFilms.push(preparedFilmData);
 		}
@@ -95,11 +117,11 @@ function displayStringFilmTable(request, resultRegion) {
 			but there is nothing after it.)
 		*/
 		films.splice(-1);
-		console.log("String films (RAW)", films);
 
 		const preparedHeadings = films[0].split("|");
 		// Remove the Id heading as we don't need it.
 		preparedHeadings.shift();
+		preparedHeadings.push("Actions");
 		// Now that we got the headings in a separate array, we can drop them from the films array'
 		films.shift();
 		console.log("String headings: ", preparedHeadings);
@@ -107,7 +129,6 @@ function displayStringFilmTable(request, resultRegion) {
 		const preparedFilms = [];
 		for (let i = 0; i < films.length; i++) {
 			let preparedFilmData = films[i].split("|");
-			preparedFilmData.shift();
 			preparedFilms.push(preparedFilmData);
 		}
 		console.log("String films: ", preparedFilms);
@@ -116,26 +137,77 @@ function displayStringFilmTable(request, resultRegion) {
 	}
 }
 
-// This function is self-explanatory for anyone with decent HTML and JS understanding.
+// After a film has been updated or deleted
+function displayCrudMessage(request, resultRegion) {
+	if (request.readyState == 4 && request.status == 200) {
+		const message = request.responseText.split("|");
+		console.log(message[0], message[1]);
+		
+		document.getElementById(resultRegion).style = "display: block";
+		
+		htmlInsert(resultRegion, message[0]);
+		document.getElementById(message[1]).style = "display: none";
+	}
+}
+
+// ==================== Utility functions ====================
 function generateTable(headings, films) {
 	let thead = "<thead><tr>"
-	headings.forEach(heading => {
-		thead += "<th>" + heading + "</th>";
+	headings.forEach((heading, index) => {
+		if (index === 5) {
+			// The "actions" heading must span across 2 columns, as there are 2 buttons.
+			thead += "<th colspan='2'>" + heading + "</th>";
+		} else {
+			thead += "<th>" + heading + "</th>";
+		}
 	})
 	thead += "</tr></thead>";
 
 	let tbody = "<tbody>";
 	films.forEach(film => {
-		tbody += "<tr>";
-		film.forEach(detail => {
-			tbody += "<td>" + detail + "</td>";
+		let filmId = null;
+
+		film.forEach((detail, index) => {
+			if (index === 0) {
+				filmId = detail;
+				tbody += "<tr id=\x22" + filmId +"\x22>";
+			} else {
+				// Inline styling for testing purposes to improve visualization.
+				tbody += "<td style='padding: 0.5rem 1rem'>" + detail + "</td>";
+			}
 		});
+		// Add "delete" and "edit" buttons at the end of each row.
+		generateActionButtons(filmId).forEach(button => {
+			tbody += button;
+		})
 		tbody += "</tr>";
 	});
 	tbody += "</tbody>";
 
-	// For testing purposes, I have included in-line styling to visualise the results better.
+	// Inline styling for testing purposes to improve visualization.
 	return ("<table style='text-align: center'>" + thead + tbody + "</table>");
+}
+
+function generateActionButtons(filmId) {
+	let buttons = [];
+
+	buttons.push(
+		/*
+		   * The double quotes that embody onclick content had to be 
+		   * encoded (\x22) to prevent formatting errors.
+		*/
+		"<td><button onclick=\x22deleteFilm('" + filmId + "', 'message')\x22>"
+		+ "<i class='fa-regular fa-trash-can'></i>"
+		+ "</button></td>"
+	);
+
+	buttons.push(
+		"<td><button onclick=\x22updateFilm('" + filmId + "', 'message')\x22>"
+		+ "<i class='fa-regular fa-pen-to-square'></i>"
+		+ "</button></td>"
+	);
+
+	return buttons;
 }
 
 function getSuitableHandler(format) {
@@ -153,6 +225,6 @@ function htmlInsert(resultRegion, html) {
 	document.getElementById(resultRegion).innerHTML = html;
 }
 
-function getValue(inputField) {
+function getEncodedValue(inputField) {
 	return encodeURIComponent(document.getElementById(inputField).value);
 }

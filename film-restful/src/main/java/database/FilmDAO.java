@@ -22,8 +22,9 @@ public class FilmDAO {
 	private FilmDAO() {
 	}
 
-	// Make sure that only one instance of FilmDAO exists.
-	public static FilmDAO getInstance()
+	// Make sure that only one instance of FilmDAO exists. 
+	// "synchronized" avoids potential threading deadlock.
+	public static synchronized FilmDAO getInstance()
 	{
 		if (instance == null) {
 			return new FilmDAO();
@@ -167,23 +168,26 @@ public class FilmDAO {
 		}
 	}
 
-	public void deleteFilm(int id)
+	public boolean deleteFilm(int id)
 	{
+		boolean deleted;
 		openConnection();
-
+		
 		// Create a DELETE statement and execute it.
 		try {
 			String deleteSQL = "DELETE FROM films WHERE id=?";
 			PreparedStatement deletePs = conn.prepareStatement(deleteSQL);
 
 			deletePs.setInt(1, id);
-
 			deletePs.executeUpdate();
 
 			closeConnection();
+			deleted = true;
 		} catch (SQLException e) {
 			System.out.println(e);
+			deleted = false;
 		}
+		return deleted;
 	}
 
 	public ArrayList<Film> searchFilms(String searchStr)
