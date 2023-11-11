@@ -1,0 +1,434 @@
+@charset "ISO-8859-1";
+
+@import
+	url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+* {
+	font-family: "Open Sans", sans-serif;
+	box-sizing: border-box;
+}
+
+:root {
+	-icon-hover-colour: #f7e7ce;
+}
+
+html, body {
+	margin: 0;
+	height: 100%;
+	min-width: 80rem;
+	background-color: #191919;
+}
+
+body {
+	/* Prevent page scrollbars from appearing upon overflow */
+	overflow: scroll;
+}
+
+.page-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.page-wrap {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: absolute;
+	width: 80rem;
+	max-height: 100%;
+	top: 5rem;
+	margin: auto;
+}
+
+/* ============================== Search ============================== */
+.search-wrap {
+	width: 40rem;
+	height: 3rem;
+	min-height: 3rem;
+	/* Align the search bar at the center of the page*/
+	margin: auto;
+	margin-bottom: 2.5rem;
+	border-radius: 0.5rem;
+	background-color: #393939;
+	border-radius: 0.5rem;
+}
+
+.search-form {
+	display: flex;
+	width: 100%;
+	height: 100%;
+}
+
+.search-form__input {
+	width: 31rem;
+	height: 100%;
+	padding: 0 1rem;
+	outline: none;
+	border: none;
+	border-radius: 0.5rem;
+	color: #d5d5d5;
+	background-color: #393939;
+	font-size: 16px;
+}
+
+.search-form__input::placeholder {
+	color: #aaa;
+}
+
+.search-form__format {
+	width: 5rem;
+	height: 100%;
+	outline: none;
+	border: none;
+	color: #d5d5d5;
+	background-color: #393939;
+	font-size: 16px;
+	text-align: center;
+}
+
+.search-form__format:hover {
+	cursor: pointer;
+}
+
+.search-form__button {
+	width: 3.5rem;
+	height: 100%;
+	/* Force the search button to the end of the search form */
+	margin-left: auto;
+	border: none;
+	border-radius: 0 0.5rem 0.5rem 0;
+	color: #d5d5d5;
+	background-color: #393939;
+	font-size: 20px;
+}
+
+.search-form__button:hover {
+	cursor: pointer;
+	background-color: #515151;
+}
+
+/* ============================== Search message ============================== */
+
+.search-message-wrap {
+	display: none;
+	width: 100%;
+}
+
+.search-message {
+	padding-left: 21rem;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	color: #d5d5d5;
+}
+
+/* ============================== Message ============================== */
+.message-wrap {
+	display: none;
+	position: relative;
+	width: 25rem;
+	max-width: 30rem;
+	height: 3rem;
+	margin-right: auto;
+	border-radius: 0.5rem;
+	background-color: #12833a;
+}
+
+.message {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	color: #d5d5d5;
+}
+
+.message i {
+	font-size: 24px;
+	margin-left: 1rem;
+	margin-right: 1rem;
+}
+
+.message-content {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.message__close {
+	height: 100%;
+	width: 3rem;
+	margin-left: auto;
+	border: none;
+	border-radius: 0 0.5rem 0.5rem 0;
+	color: #d5d5d5;
+	background-color: #12833a;
+}
+
+.message__close:hover {
+	cursor: pointer;
+	background-color: #16a348;
+}
+
+.message__close i {
+	margin: 0;
+	padding: 0 0.5rem;
+}
+
+/* ============================== Table ============================== */
+.table-wrap {
+	position: relative;
+	min-width: 80rem;
+	max-width: 80rem;
+	max-height: 32rem;
+	margin: auto;
+	margin-top: 2.5rem;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	border-left: 1px solid #191919;
+	border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.table-wrap::-webkit-scrollbar {
+	width: 1rem;
+}
+
+.table-wrap::-webkit-scrollbar-track {
+	background-color: #272727;
+	border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.table-wrap::-webkit-scrollbar-thumb {
+	background-color: #aaa;
+	border-radius: 0 0.5rem 0.5rem 0;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	color: #d5d5d5;
+	text-align: center;
+}
+
+th {
+	/* Force table header to stay at the top when scrolling down */
+	position: sticky;
+	top: 0;
+	padding: 1rem 0;
+	background-color: #272727;
+	outline: 1px solid #272727;
+	font-size: 18px;
+}
+
+.new-film-button {
+	border: none;
+	/* 
+		tr:nth-child(odd) button overrides this button's background colour,
+		so we need to prevent that.
+	*/
+	background-color: #272727 !important;
+	color: #d5d5d5;
+	font-size: 20px;
+}
+
+.new-film-button:hover {
+	cursor: pointer;
+	color: #1ed760 !important;
+}
+
+tr:nth-child(even), tr:nth-child(even) button {
+	background-color: #393939;
+}
+
+tr:nth-child(odd), tr:nth-child(odd) button {
+	background-color: #515151;
+}
+
+tr {
+	min-width: 1263px;
+}
+
+td {
+	padding: 1rem;
+}
+
+td:nth-child(1) {
+	width: 78px;
+}
+
+td:nth-child(2) {
+	width:197px;
+}
+
+td:nth-child(3) {
+	width:69px;
+}
+
+td:nth-child(4) {
+	width:189px;
+}
+
+td:nth-child(5) {
+	width:194px;
+}
+
+td:nth-child(6) {
+	width:427px;
+}
+
+td:nth-child(7) {
+	width:53px;
+}
+
+td:nth-child(8) {
+	width:56px;
+}
+
+.table-field-delete {
+	padding-right: 0.5rem;
+}
+
+.table-field-update {
+	padding-left: 0.5rem;
+}
+
+.delete-button:hover {
+	cursor: pointer;
+	color: #d93f44;
+}
+
+.update-button:hover {
+	cursor: pointer;
+	color: #32c9cd;
+}
+
+td button {
+	border: none;
+	color: #d5d5d5;
+	font-size: 20px;
+}
+
+/* ============================== Insert Film ============================== */
+.film-data-wrap {
+	display: none;
+	width: 80rem;
+	height: 3rem;
+	min-height: 3rem;
+	max-height: 10rem;
+	margin-top: 2.5rem;
+	border-right: 1rem solid #272727;
+	border-radius: 0.5rem;
+	background-color: #393939;
+}
+
+.film-data-form {
+	display: flex;
+	width: 100%;
+	height: 100%;
+}
+
+.film-data-form input {
+	height: 100%;
+	padding: 0 0.5rem;
+	background-color: #393939;
+	color: #d5d5d5;
+	border: none;
+	outline: none;
+	font-size: 16px;
+	text-align: center;
+}
+
+.film-data-form input::placeholder {
+	color: #aaa;
+}
+
+#film_data_form_id {
+	width: 5rem;
+	color: #aaa;
+	padding-left: 1rem !important;
+	border-radius: 0.5rem 0 0 0.5rem;
+	font-style: italic;
+	font-weight: bold;
+	text-align: left !important;
+}
+
+#film_data_form_id.insert {
+	color: #1ed760 !important;
+}
+
+#film_data_form_id.update {
+	color: #32c9cd !important;
+}
+
+#film_data_form_title {
+	width: 197px;
+}
+
+/* Removes the arrow buttons from number input */
+#film_data_form_year::-webkit-outer-spin-button, #film_data_form_year::-webkit-inner-spin-button
+	{
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+#film_data_form_year {
+	width: 69px;
+}
+
+#film_data_form_director {
+	width: 189px;
+}
+
+#film_data_form_stars {
+	width: 194px;
+}
+
+#film_data_form_review {
+	width: 427px;
+}
+
+#film_data_form_button_wrap {
+	width: 109px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-left: 0.25rem;
+	padding-right: 0.5rem;
+}
+
+#film_data_form_submit, #film_data_form_cancel {
+	height: 100%;
+	width: 50%;
+	border: none;
+	background-color: #393939;
+	color: #d5d5d5;
+	font-size: 22px;
+}
+
+#film_data_form_submit {
+	padding: 0 1rem;
+	color: #aaa;
+}
+
+#film_data_form_submit.active {
+	color: #d5d5d5;
+}
+
+.active.insert:hover {
+	cursor: pointer;
+	color: #1ed760 !important;
+}
+
+.active.update:hover {
+	cursor: pointer;
+	color: #32c9cd !important;
+}
+
+#film_data_form_cancel {
+	padding: 0 1rem;
+}
+
+#film_data_form_cancel:hover {
+	cursor: pointer;
+	color: #d93f44;
+}

@@ -12,7 +12,9 @@
 <body>
 	<div class="search-container">
 		<form action="./search" class="search-form">
-			<input name="q" type="text" value="${searchString}" placeholder="Search for a film..." maxlength="100" autocomplete="off">
+			<input name="q" type="text" value="${searchString}"
+				placeholder="Search for a film..." maxlength="100"
+				autocomplete="off">
 			<button type="submit">
 				<i class="fa-solid fa-magnifying-glass"></i>
 			</button>
@@ -69,8 +71,7 @@
 									</td>
 									<td>
 										<form action="./update" class="update-form-home">
-											<button type="submit" name="uid"
-												value="${f.id}">
+											<button type="submit" name="uid" value="${f.id}">
 												<i class="fa-regular fa-pen-to-square"></i>
 											</button>
 										</form>

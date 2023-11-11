@@ -8,7 +8,8 @@ import models.Film;
 
 import java.sql.*;
 
-public class FilmDAO {
+public class FilmDAO
+{
 
 	private static FilmDAO instance = null;
 	Film oneFilm = null;
@@ -22,7 +23,7 @@ public class FilmDAO {
 	private FilmDAO() {
 	}
 
-	// Make sure that only one instance of FilmDAO exists. 
+	// Make sure that only one instance of FilmDAO exists.
 	// "synchronized" avoids potential threading deadlock.
 	public static synchronized FilmDAO getInstance()
 	{
@@ -119,8 +120,9 @@ public class FilmDAO {
 		return oneFilm;
 	}
 
-	public void insertFilm(Film f)
+	public boolean insertFilm(Film f)
 	{
+		boolean inserted;
 		openConnection();
 
 		// Create an INSERT statement and execute it.
@@ -138,13 +140,17 @@ public class FilmDAO {
 			insertPs.executeUpdate();
 
 			closeConnection();
+			inserted = true;
 		} catch (SQLException e) {
 			System.out.println(e);
+			inserted = false;
 		}
+		return inserted;
 	}
 
-	public void updateFilm(Film f)
+	public boolean updateFilm(Film f)
 	{
+		boolean updated;
 		openConnection();
 
 		// Create an UPDATE statement and execute it.
@@ -163,16 +169,19 @@ public class FilmDAO {
 			updatePs.executeUpdate();
 
 			closeConnection();
+			updated = true;
 		} catch (SQLException e) {
 			System.out.println(e);
+			updated = false;
 		}
+		return updated;
 	}
 
 	public boolean deleteFilm(int id)
 	{
 		boolean deleted;
 		openConnection();
-		
+
 		// Create a DELETE statement and execute it.
 		try {
 			String deleteSQL = "DELETE FROM films WHERE id=?";
@@ -209,6 +218,24 @@ public class FilmDAO {
 		}
 
 		return searchResults;
+	}
+
+	public int getNextAutoIncrement()
+	{
+		int id = 0;
+		openConnection();
+
+		try {
+			String selectSQL = "SELECT auto_increment FROM information_schema.tables WHERE table_name = 'films'";
+			ResultSet rs = stmt.executeQuery(selectSQL);
+
+			while (rs.next()) {
+				id = rs.getInt("Auto_increment");
+			}
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
+		return id;
 	}
 
 }

@@ -12,7 +12,8 @@ import database.FilmDAO;
 import models.Film;
 
 @WebServlet("/insert")
-public class InsertFilm extends HttpServlet {
+public class InsertFilm extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -21,7 +22,8 @@ public class InsertFilm extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException
 	{
 		FilmDAO dao = FilmDAO.getInstance();
 

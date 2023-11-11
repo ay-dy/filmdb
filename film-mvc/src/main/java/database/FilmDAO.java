@@ -10,7 +10,7 @@ import java.sql.*;
 
 public class FilmDAO {
 
-	private static FilmDAO instance = null;
+	
 	Film oneFilm = null;
 	Connection conn = null;
 	Statement stmt = null;
@@ -22,12 +22,11 @@ public class FilmDAO {
 	private FilmDAO() {
 	}
 
+	private static FilmDAO instance = new FilmDAO();
 	// Make sure that only one instance of FilmDAO exists.
-	public static FilmDAO getInstance()
+	// "synchronized" avoids potential threading deadlock.
+	public static synchronized FilmDAO getInstance()
 	{
-		if (instance == null) {
-			return new FilmDAO();
-		}
 		return instance;
 	}
 

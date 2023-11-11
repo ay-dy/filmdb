@@ -17,13 +17,13 @@ import models.Film;
 public class Home extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException
 	{
 		FilmDAO dao = FilmDAO.getInstance();
 		ArrayList<Film> allFilms = dao.getAllFilms();
 
 		request.setAttribute("films", allFilms);
-
 		/*
 		 * The result count will be used to determine whether to display the table or an
 		 * error message.
@@ -34,7 +34,8 @@ public class Home extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException
 	{
 		response.sendRedirect("http://localhost:8081/film-mvc/home");
 	}

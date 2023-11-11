@@ -1,9 +1,11 @@
 package models;
 
 import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = { "id", "title", "year", "director", "stars", "review" })
+@XmlRootElement(name = "film")
 public class Film
 {
 	public Film() {}
@@ -11,6 +13,15 @@ public class Film
 	public Film(int id, String title, int year, String director, String stars, String review) {
 		super();
 		this.id = id;
+		this.title = title;
+		this.year = year;
+		this.director = director;
+		this.stars = stars;
+		this.review = review;
+	}
+	
+	public Film(String title, int year, String director, String stars, String review) {
+		super();
 		this.title = title;
 		this.year = year;
 		this.director = director;

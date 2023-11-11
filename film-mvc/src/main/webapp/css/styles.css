@@ -14,6 +14,7 @@ body {
 	background-color: #191919;
 	margin: 0;
 	padding: 0;
+	overflow: scroll;
 }
 
 /********************* GLOBAL *********************/
@@ -99,8 +100,9 @@ body {
 /********************* HOME PAGE *********************/
 .table-wrapper {
 	max-width: 75%;
-	max-height: 31rem;
-	overflow: scroll;
+	max-height: 28rem;
+	overflow-y: scroll;
+	overflow-x: hidden;
 	border: 1px solid #272727;
 	border-radius: 0.5rem;
 }

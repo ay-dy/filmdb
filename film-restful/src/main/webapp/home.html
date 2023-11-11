@@ -1,21 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Home</title>
-<script src="https://kit.fontawesome.com/59a8e1717f.js"></script>
+<meta charset="ISO-8859-1">
+<title>Film DB</title>
+<link rel="stylesheet" href="./css/styles-clean.css">
 </head>
-<body onload="getFilmTable('search-string', 'format', 'films-table')">
-	<form action="#" style="margin: 1rem 1rem 3rem 1rem;">
-		<input type="text" id="search-string"> <select id="format">
-			<option value="json">JSON</option>
-			<option value="xml">XML</option>
-			<option value="string">String</option>
-		</select> <input type="submit" value="Search"
-			onclick="getFilmTable('search-string', 'format', 'films-table')">
-	</form>
-	<div id="message" style="display: none"></div>
-	<div id="films-table"></div>
+<body>
+	<div class="page-container">
+		<div class="page-wrap">
+			<div class="search-wrap">
+				<form action="javascript:void(0)" class="search-form">
+					<input type="text" id="search_form_input" class="search-form__input" placeholder="Search for a film..." autocomplete="off">
+					<select id="search_form_format" class="search-form__format">
+						<option value="json">JSON</option>
+						<option value="xml">XML</option>
+						<option value="string">String</option>
+					</select>
+					<button class="search-form__button" onclick="getSearchResults('search_form_input', 'search_form_format', 'table_wrap')">
+						<i class="fa-solid fa-magnifying-glass"></i>
+					</button>
+				</form>
+			</div>
+			<div id="search_message_wrap" class="search-message-wrap">
+				<div id="search_message" class="search-message">
+					<p id="search_message_content"></p>
+				</div>
+			</div>
+			<div id="message_wrap" class="message-wrap">
+				<div id="message" class="message">
+					<i class="fa-solid fa-circle-check"></i>
+					<p id="message_content"></p>
+					<button id="message_close" class="message__close" onclick="hideElement('message_wrap')">
+						<i class="fa-solid fa-xmark"></i>
+					</button>
+				</div>
+			</div>
+			<div id="table_wrap" class="table-wrap"></div>
+			
+			<div id="film_data_wrap" class="film-data-wrap">
+				<form action="javascript:void(0)" onkeyup="checkFormInputFields('film_data_form')"
+					id="film_data_form" class="film-data-form">
+					<input type="text" id="film_data_form_id" disabled>
+					<input type="text" id="film_data_form_title" onblur="checkFormInputFields('film_data_form')" placeholder="Title" maxlength="100" autocomplete="off">
+					<input type="number" id="film_data_form_year" onblur="checkFormInputFields('film_data_form')" placeholder="Year" min="1922" max="2122">
+					<input type="text" id="film_data_form_director" onblur="checkFormInputFields('film_data_form')" placeholder="Director" maxlength="100" autocomplete="off">
+					<input type="text" id="film_data_form_stars" onblur="checkFormInputFields('film_data_form')" placeholder="Stars" maxlength="100" autocomplete="off">
+					<input type="text" id="film_data_form_review" onblur="checkFormInputFields('film_data_form')" placeholder="Review" maxlength="500" autocomplete="off">
+					<div id="film_data_form_button_wrap">
+						<button id="film_data_form_submit" onmouseover="blurActiveElement()" class="inactive">
+							<i class="fa-solid fa-check"></i>
+						</button>
+						<button id="film_data_form_cancel" onclick="closeForm()" onmouseover="blurActiveElement()">
+							<i class="fa-solid fa-xmark"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+			
+		</div>
+	</div>
+	<script src="https://kit.fontawesome.com/59a8e1717f.js"></script>
 	<script type="text/javascript" src="./scripts/script.js"></script>
 </body>
 </html>
